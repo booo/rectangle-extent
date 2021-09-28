@@ -1,3 +1,4 @@
+from dms2dec.dms_convert import dms2dec
 from geojson import Polygon, Feature, FeatureCollection
 from geopy import distance
 from math import sqrt
@@ -37,16 +38,21 @@ parser = argparse.ArgumentParser(
     description='Create a rectangle at a geo position.'
     )
 
-parser.add_argument('lat', type=float, help='Latitude')
-parser.add_argument('lon', type=float, help='Longitude')
+parser.add_argument('lat', type=str, help='Latitude')
+parser.add_argument('lon', type=str, help='Longitude')
 parser.add_argument('dist', type=float, help='Distance', default=1000)
 parser.add_argument(
         '--format',
         default="kml",
         help='output format (default: kml)'
         )
+parser.add_argument('--degrees', action='store_true')
 
 args = parser.parse_args()
+
+if args.degrees is True:
+    args.lat = dms2dec(args.lat)
+    args.lon = dms2dec(args.lon)
 
 coordinates = calculate_rect(args.lat, args.lon, args.dist)
 
